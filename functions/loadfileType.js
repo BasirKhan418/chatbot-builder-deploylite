@@ -7,16 +7,12 @@ import { jsonLoaderFromUrl } from '../applogics/jsonloadedfromUrl.js';
 import { pptxLoaderFromUrl } from '../applogics/pptxloadedFromurl.js';
 import { srtLoaderFromUrl } from '../applogics/srtLoaderFromUrl.js';
 import { textLoaderFromUrl } from '../applogics/textLoaderFromUrl.js';
-import { transcribeYouTubeVideo } from '../applogics/transcribeYoutubeVideo.js';
 import { openaiWhisperLoaderFromUrl } from '../applogics/openaiWhisperLoaderFromUrl.js';
 import { webLoaderFromUrl } from '../applogics/webLoaderfromurl.js';
 const loadFileByType=async(url)=> {
   const lowerUrl = url.toLowerCase();
 
   try {
-    if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) {
-      return await transcribeYouTubeVideo(url);
-    }
 
     if (lowerUrl.startsWith('http') && !lowerUrl.includes('.')) {
       return await webLoaderFromUrl(url);
