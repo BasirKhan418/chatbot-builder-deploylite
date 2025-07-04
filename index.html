@@ -464,7 +464,7 @@
           const data = await response.json();
 
           this.hideTypingIndicator();
-          this.addMessage(data.response || data.message || 'Sorry, I could not process your request.', 'bot');
+          this.addMessage(data.data || data.data || 'Sorry, I could not process your request.', 'bot');
         } catch (error) {
           console.error('Error:', error);
           this.hideTypingIndicator();

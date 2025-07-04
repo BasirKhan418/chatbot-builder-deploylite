@@ -49,6 +49,6 @@ Answer:
   const chain = prompt.pipe(llm);
   const response = await chain.invoke({ context, question: query });
 
-  console.log("🧠 LLM Answer:", response);
-  return response;
+  console.log("🧠 LLM Answer:", response.content);
+  return response.content;
 }
