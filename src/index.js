@@ -12,5 +12,5 @@ app.get('/', (req, res) => {
     res.send("Welcome to the Chatbot Builder API! This is a simple chatbot builder application.");
 });
 app.listen(5080, '0.0.0.0', () => {
-  console.log("Server running on port 5080 new setup");
+  console.log("Server running on port 5080 new setup 1");
 });
