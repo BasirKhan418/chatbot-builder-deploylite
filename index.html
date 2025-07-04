@@ -355,207 +355,196 @@
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h1>AI Chat Assistant</h1>
-            <p>Choose your AI provider and start chatting</p>
-        </div>
-        
-        <div class="provider-selector">
-            <label for="provider">AI Provider:</label>
-            <select id="provider" class="provider-select">
-                <option value="openai">OpenAI</option>
-                <option value="google">Google</option>
-            </select>
-        </div>
-        
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot">
-                <div class="message-avatar">AI</div>
-                <div class="message-content">
-                    Hello! I'm your AI assistant. Choose an AI provider above and ask me anything!
-                </div>
-            </div>
-        </div>
-        
-        <div class="chat-input">
-            <div class="input-container">
-                <textarea 
-                    id="messageInput" 
-                    class="message-input" 
-                    placeholder="Type your message here..."
-                    rows="1"
-                ></textarea>
-            </div>
-            <button id="sendButton" class="send-button">
-                ➤
-            </button>
-        </div>
-        
-        <div class="footer">
-            <p>Powered by <a href="#" target="_blank">DeployLite</a></p>
-        </div>
+  <div class="chat-container">
+    <div class="chat-header">
+      <h1>AI Chat Assistant</h1>
+      <p>Choose your AI provider and start chatting</p>
     </div>
 
-    <script>
-        class ChatBot {
-            constructor() {
-                this.messagesContainer = document.getElementById('chatMessages');
-                this.messageInput = document.getElementById('messageInput');
-                this.sendButton = document.getElementById('sendButton');
-                this.providerSelect = document.getElementById('provider');
-                
-                this.init();
-            }
-            
-            init() {
-                this.sendButton.addEventListener('click', () => this.sendMessage());
-                this.messageInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        this.sendMessage();
-                    }
-                });
-                
-                // Auto-resize textarea
-                this.messageInput.addEventListener('input', (e) => {
-                    e.target.style.height = 'auto';
-                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
-                });
-            }
-            
-            async sendMessage() {
-                const message = this.messageInput.value.trim();
-                const provider = this.providerSelect.value;
-                
-                if (!message) return;
-                
-                // Add user message to chat
-                this.addMessage(message, 'user');
-                
-                // Clear input
-                this.messageInput.value = '';
-                this.messageInput.style.height = 'auto';
-                
-                // Disable send button
-                this.sendButton.disabled = true;
-                
-                // Show typing indicator
-                this.showTypingIndicator();
-                
-                try {
-                    // Make API call
-                    const response = await fetch('http://host.docker.internal:5080/ai/chat', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            query: message,
-                            type: provider
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    // Hide typing indicator
-                    this.hideTypingIndicator();
-                    
-                    // Add bot response
-                    this.addMessage(data.response || data.message || 'Sorry, I could not process your request.', 'bot');
-                    
-                } catch (error) {
-                    console.error('Error:', error);
-                    this.hideTypingIndicator();
-                    this.addMessage('Sorry, there was an error processing your request. Please make sure the server is running on localhost:5080.', 'bot');
-                    this.showErrorMessage('Connection error: ' + error.message);
-                } finally {
-                    // Re-enable send button
-                    this.sendButton.disabled = false;
-                }
-            }
-            
-            addMessage(content, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${sender}`;
-                
-                const avatar = document.createElement('div');
-                avatar.className = 'message-avatar';
-                avatar.textContent = sender === 'user' ? 'You' : 'AI';
-                
-                const messageContent = document.createElement('div');
-                messageContent.className = 'message-content';
-                messageContent.textContent = content;
-                
-                messageDiv.appendChild(avatar);
-                messageDiv.appendChild(messageContent);
-                
-                this.messagesContainer.appendChild(messageDiv);
-                this.scrollToBottom();
-            }
-            
-            showTypingIndicator() {
-                const typingDiv = document.createElement('div');
-                typingDiv.className = 'message bot';
-                typingDiv.id = 'typingIndicator';
-                
-                const avatar = document.createElement('div');
-                avatar.className = 'message-avatar';
-                avatar.textContent = 'AI';
-                
-                const typingContent = document.createElement('div');
-                typingContent.className = 'typing-indicator';
-                typingContent.style.display = 'flex';
-                typingContent.innerHTML = `
-                    <span>AI is typing</span>
-                    <div class="typing-dots">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                `;
-                
-                typingDiv.appendChild(avatar);
-                typingDiv.appendChild(typingContent);
-                
-                this.messagesContainer.appendChild(typingDiv);
-                this.scrollToBottom();
-            }
-            
-            hideTypingIndicator() {
-                const typingIndicator = document.getElementById('typingIndicator');
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-            }
-            
-            showErrorMessage(message) {
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message';
-                errorDiv.textContent = message;
-                
-                this.messagesContainer.appendChild(errorDiv);
-                this.scrollToBottom();
-                
-                // Remove error message after 5 seconds
-                setTimeout(() => {
-                    errorDiv.remove();
-                }, 5000);
-            }
-            
-            scrollToBottom() {
-                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
-            }
-        }
-        
-        // Initialize the chatbot when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new ChatBot();
+    <div class="provider-selector">
+      <label for="provider">AI Provider:</label>
+      <select id="provider" class="provider-select">
+        <option value="openai">OpenAI</option>
+        <option value="google">Google</option>
+      </select>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <div class="message-avatar">AI</div>
+        <div class="message-content">
+          Hello! I'm your AI assistant. Choose an AI provider above and ask me anything!
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <div class="input-container">
+        <textarea id="messageInput" class="message-input" placeholder="Type your message here..." rows="1"></textarea>
+      </div>
+      <button id="sendButton" class="send-button">➤</button>
+    </div>
+
+    <div class="footer">
+      <p>Powered by <a href="#" target="_blank">DeployLite</a></p>
+      <p>API Endpoint: <span id="apiUrl"></span></p>
+    </div>
+  </div>
+
+  <script>
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    class ChatBot {
+      constructor() {
+        this.messagesContainer = document.getElementById('chatMessages');
+        this.messageInput = document.getElementById('messageInput');
+        this.sendButton = document.getElementById('sendButton');
+        this.providerSelect = document.getElementById('provider');
+
+        // Get base URL from query param or default
+        const providedUrl = getQueryParam('url');
+        this.apiBaseUrl = providedUrl || 'http://host.docker.internal:5080';
+
+        // Update footer display
+        document.getElementById('apiUrl').textContent = this.apiBaseUrl;
+
+        this.init();
+      }
+
+      init() {
+        this.sendButton.addEventListener('click', () => this.sendMessage());
+        this.messageInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            this.sendMessage();
+          }
         });
-    </script>
+
+        this.messageInput.addEventListener('input', (e) => {
+          e.target.style.height = 'auto';
+          e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+        });
+      }
+
+      async sendMessage() {
+        const message = this.messageInput.value.trim();
+        const provider = this.providerSelect.value;
+
+        if (!message) return;
+
+        this.addMessage(message, 'user');
+        this.messageInput.value = '';
+        this.messageInput.style.height = 'auto';
+        this.sendButton.disabled = true;
+
+        this.showTypingIndicator();
+
+        try {
+          const backendUrl = `${this.apiBaseUrl}/ai/chat`;
+          console.log("base api", this.apiBaseUrl);
+          console.log(`Sending message to backend: ${backendUrl}`);
+          const response = await fetch(backendUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              query: message,
+              type: provider,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          this.hideTypingIndicator();
+          this.addMessage(data.response || data.message || 'Sorry, I could not process your request.', 'bot');
+        } catch (error) {
+          console.error('Error:', error);
+          this.hideTypingIndicator();
+          this.addMessage('Sorry, there was an error processing your request. Please make sure the server is running.', 'bot');
+          this.showErrorMessage('Connection error: ' + error.message);
+        } finally {
+          this.sendButton.disabled = false;
+        }
+      }
+
+      addMessage(content, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}`;
+
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.textContent = sender === 'user' ? 'You' : 'AI';
+
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        messageContent.textContent = content;
+
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(messageContent);
+        this.messagesContainer.appendChild(messageDiv);
+        this.scrollToBottom();
+      }
+
+      showTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot';
+        typingDiv.id = 'typingIndicator';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.textContent = 'AI';
+
+        const typingContent = document.createElement('div');
+        typingContent.className = 'typing-indicator';
+        typingContent.style.display = 'flex';
+        typingContent.innerHTML = `
+          <span>AI is typing</span>
+          <div class="typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        `;
+
+        typingDiv.appendChild(avatar);
+        typingDiv.appendChild(typingContent);
+        this.messagesContainer.appendChild(typingDiv);
+        this.scrollToBottom();
+      }
+
+      hideTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) typingIndicator.remove();
+      }
+
+      showErrorMessage(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = message;
+        this.messagesContainer.appendChild(errorDiv);
+        this.scrollToBottom();
+
+        setTimeout(() => {
+          errorDiv.remove();
+        }, 5000);
+      }
+
+      scrollToBottom() {
+        this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      new ChatBot();
+    });
+  </script>
 </body>
 </html>
